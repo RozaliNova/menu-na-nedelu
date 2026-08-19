@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Меню на неделю</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --bg:#FDF9F0; --card:#fff; --ink:#2C2A28; --mut:#8A8178;
+    --hero:#FAD98A; --heroInk:#4A2E05; --heroAcc:#B5661A;
+    --adult:#B5D4F4; --adultInk:#042C53; --adultAcc:#185FA5;
+    --kid:#C0DD97; --kidInk:#173404; --kidAcc:#3B6D11;
+    --rec:#FAC775; --recInk:#633806; --fav:#F4C0D1; --favInk:#72243E;
+  }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg); color:var(--ink); max-width:480px; margin:0 auto; padding:0 16px 92px; min-height:100vh; }
+  .serif{ font-family:Georgia,"Times New Roman",serif; font-style:italic; }
+  .topbar{ display:flex; justify-content:space-between; align-items:center; padding:14px 2px 10px; }
+  .hello{ font-size:14px; color:var(--mut); } .hello b{ color:var(--ink); font-weight:600; }
+  .avatar{ width:38px; height:38px; border-radius:50%; background:var(--fav); color:var(--favInk);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; }
+  .wksw{ display:flex; align-items:center; justify-content:space-between; background:#fff; border-radius:14px;
+    padding:8px 10px; margin-bottom:14px; box-shadow:0 1px 6px rgba(0,0,0,.05); }
+  .wksw button{ background:#F3E9D6; border:none; width:34px; height:34px; border-radius:10px; font-size:16px;
+    cursor:pointer; color:#7A4E12; } .wksw button:disabled{ opacity:.35; cursor:default; }
+  .wksw .wk{ font-size:14px; font-weight:600; } .wksw .wk small{ color:var(--mut); font-weight:400; }
+  .hero{ position:relative; background:var(--hero); border-radius:22px; padding:20px 16px 22px; margin-bottom:16px; overflow:hidden; }
+  .hero h1{ font-size:28px; line-height:1.05; color:var(--heroInk); font-weight:800; }
+  .hero .h2{ font-size:28px; line-height:1.05; color:var(--heroAcc); }
+  .hero p{ font-size:12px; color:#7A4E12; margin-top:8px; max-width:150px; }
+  .sticker1{ position:absolute; bottom:14px; left:14px; width:58px; height:58px; border-radius:50%;
+    background:#ED93B1; color:#4B1528; display:flex; flex-direction:column; align-items:center; justify-content:center; transform:rotate(-8deg); }
+  .sticker1 b{ font-size:18px; line-height:1; } .sticker1 span{ font-size:9px; }
+  .sticker2{ position:absolute; bottom:58px; left:46px; padding:5px 11px; border-radius:14px;
+    background:#97C459; color:#173404; font-size:10px; font-weight:600; transform:rotate(6deg); }
+  .days{ display:flex; gap:6px; margin-bottom:16px; }
+  .day{ flex:1; text-align:center; padding:9px 0; border-radius:13px; font-size:12px; background:#F0E7D6; color:#8A7A5C; border:none; cursor:pointer; font-family:inherit; }
+  .day.on{ font-weight:700; }
+  .sec-title{ font-size:14px; font-weight:600; margin:0 2px 10px; }
+  .menu{ border-radius:18px; padding:14px 15px; margin-bottom:10px; }
+  .menu.adult{ background:var(--adult); } .menu.kid{ background:var(--kid); }
+  .menu .lbl{ display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; margin-bottom:8px; }
+  .menu.adult .lbl{ color:var(--adultAcc); } .menu.kid .lbl{ color:var(--kidAcc); }
+  .row{ display:flex; justify-content:space-between; align-items:center; font-size:13px; padding:5px 0; cursor:pointer; }
+  .menu.adult .row{ color:var(--adultInk); } .menu.kid .row{ color:var(--kidInk); }
+  .row .val{ display:flex; align-items:center; gap:6px; }
+  .menu.adult .row .val{ color:var(--adultAcc); } .menu.kid .row .val{ color:var(--kidAcc); }
+  .tiles{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0; }
+  .tile{ border-radius:18px; padding:16px; cursor:pointer; }
+  .tile.rec{ background:var(--rec); color:var(--recInk); } .tile.fav{ background:var(--fav); color:var(--favInk); }
+  .tile .ic{ font-size:22px; } .tile .tt{ font-size:14px; font-weight:700; margin-top:8px; }
+  .cta{ background:var(--ink); color:#fff; border:none; width:100%; border-radius:20px; padding:16px;
+    font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .page-h{ font-size:22px; font-weight:800; margin:6px 2px 14px; } .page-h .serif{ color:var(--heroAcc); }
+  .listcard{ background:var(--card); border-radius:16px; padding:14px 15px; margin-bottom:10px; box-shadow:0 1px 6px rgba(0,0,0,.04); }
+  .listcard .dish{ display:flex; align-items:center; gap:10px; cursor:pointer; }
+  .listcard .dish .em{ font-size:22px; } .listcard .dish .nm{ font-size:14px; font-weight:600; }
+  .listcard .dish .tm{ font-size:11px; color:var(--mut); }
+  .weekday{ background:var(--card); border-radius:16px; padding:14px 15px; margin-bottom:12px; box-shadow:0 1px 6px rgba(0,0,0,.04); }
+  .weekday h3{ font-size:15px; font-weight:700; margin-bottom:8px; }
+  .cart-group{ margin-bottom:16px; } .cart-group h4{ font-size:12px; font-weight:700; color:var(--heroAcc); text-transform:uppercase; letter-spacing:.5px; margin:0 2px 8px; }
+  .cart-item{ display:flex; align-items:center; gap:10px; background:var(--card); border-radius:12px; padding:11px 13px; margin-bottom:7px; cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,.03); }
+  .cart-item .box{ width:20px; height:20px; border-radius:6px; border:2px solid #D8CDBB; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; color:#fff; }
+  .cart-item.done .box{ background:var(--kidAcc); border-color:var(--kidAcc); }
+  .cart-item .nm{ font-size:14px; } .cart-item .qty{ font-size:12px; color:var(--mut); margin-left:auto; }
+  .cart-item.done .nm{ text-decoration:line-through; color:var(--mut); }
+  .banner{ background:#FBE7B0; color:#7A4E12; font-size:12px; border-radius:12px; padding:10px 12px; margin:10px 0; text-align:center; }
+  .nav{ position:fixed; left:0; right:0; bottom:0; max-width:480px; margin:0 auto; background:#fff;
+    display:flex; justify-content:space-around; padding:10px 0 calc(10px + env(safe-area-inset-bottom)); border-top:1px solid #eee; }
+  .nav button{ background:none; border:none; font-size:22px; cursor:pointer; opacity:.4; padding:6px 14px; }
+  .nav button.on{ opacity:1; transform:translateY(-1px); }
+  .modal{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:flex-end; z-index:50; }
+  .sheet{ background:var(--bg); width:100%; max-width:480px; margin:0 auto; border-radius:24px 24px 0 0; padding:20px 18px calc(24px + env(safe-area-inset-bottom)); max-height:82vh; overflow-y:auto; }
+  .sheet .close{ float:right; background:#EDE3D3; border:none; width:32px; height:32px; border-radius:50%; font-size:16px; cursor:pointer; color:#7A4E12; }
+  .sheet .em{ font-size:40px; } .sheet h2{ font-size:20px; font-weight:800; margin:6px 0 2px; } .sheet .tm{ font-size:12px; color:var(--mut); margin-bottom:16px; }
+  .sheet h5{ font-size:12px; font-weight:700; color:var(--heroAcc); text-transform:uppercase; letter-spacing:.5px; margin:14px 0 8px; }
+  .sheet ol{ padding-left:18px; } .sheet li{ font-size:14px; line-height:1.7; }
+  .sheet .ing{ display:flex; justify-content:space-between; font-size:14px; padding:5px 0; border-bottom:1px solid #EFE6D6; } .sheet .ing .q{ color:var(--mut); }
+  .empty{ text-align:center; color:var(--mut); font-size:14px; padding:40px 20px; }
+
+  .hero{ min-height:236px; }
+  .hero h1,.hero .h2,.hero p,.hero .herometa{ max-width:56%; position:relative; z-index:1; }
+  .herometa{ font-size:11px; color:#7A4E12; font-weight:600; margin-top:10px; }
+  .hero-figure{ position:absolute; right:6px; top:0; bottom:0; width:52%; background-image:url(data:image/webp;base64,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); background-size:contain; background-position:right bottom; background-repeat:no-repeat; }
+</style>
+</head>
+<body>
+<div id="app"><div class="empty">Загрузка…</div></div>
+<div class="nav" id="nav" style="display:none">
+  <button data-tab="home" onclick="go('home')">🏠</button>
+  <button data-tab="week" onclick="go('week')">📅</button>
+  <button data-tab="cart" onclick="go('cart')">🛒</button>
+  <button data-tab="fav"  onclick="go('fav')">❤️</button>
+</div>
+<script>
+var FALLBACK = {
+  "user": {
+    "name": "Роза"
+  },
+  "groups": [
+    "Овощи и фрукты",
+    "Мясо и рыба",
+    "Молочное и яйца",
+    "Бакалея",
+    "Зелень и специи"
+  ],
+  "meals": [
+    "Завтрак",
+    "Обед",
+    "Ужин"
+  ],
+  "days": [
+    "Понедельник",
+    "Вторник",
+    "Среда",
+    "Четверг",
+    "Пятница",
+    "Суббота",
+    "Воскресенье"
+  ],
+  "daysShort": [
+    "Пн",
+    "Вт",
+    "Ср",
+    "Чт",
+    "Пт",
+    "Сб",
+    "Вс"
+  ],
+  "dishes": {
+    "ab1": {
+      "name": "Овсянка с творогом и ягодами",
+      "emoji": "🥣",
+      "time": "15 мин",
+      "audience": "adults",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Овсяные хлопья",
+          "qty": "60 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Творог",
+          "qty": "100 г",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Ягоды",
+          "qty": "80 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Грецкие орехи",
+          "qty": "15 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Молоко",
+          "qty": "150 мл",
+          "group": "Молочное и яйца"
+        }
+      ],
+      "steps": [
+        "Свари хлопья на молоке 5–7 минут.",
+        "Добавь творог, ягоды и орехи."
+      ]
+    },
+    "ab2": {
+      "name": "Омлет с овощами и цельнозерновым тостом",
+      "emoji": "🍳",
+      "time": "12 мин",
+      "audience": "adults",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Яйца",
+          "qty": "2 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Шпинат",
+          "qty": "40 г",
+          "group": "Зелень и специи"
+        },
+        {
+          "name": "Помидор",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Цельнозерновой хлеб",
+          "qty": "1 ломтик",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Взбей яйца, вылей на сковороду со шпинатом и помидором.",
+        "Готовь под крышкой 5 минут.",
+        "Подавай с подсушенным тостом."
+      ]
+    },
+    "ab3": {
+      "name": "Смузи-боул с йогуртом и орехами",
+      "emoji": "🥤",
+      "time": "7 мин",
+      "audience": "adults",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Йогурт",
+          "qty": "150 г",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Банан",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Ягоды",
+          "qty": "60 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Овсяные хлопья",
+          "qty": "30 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Миндаль",
+          "qty": "15 г",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Взбей йогурт с бананом и ягодами.",
+        "Выложи в миску, посыпь хлопьями и миндалём."
+      ]
+    },
+    "ab4": {
+      "name": "Тост с авокадо и яйцом",
+      "emoji": "🥑",
+      "time": "10 мин",
+      "audience": "adults",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Цельнозерновой хлеб",
+          "qty": "1 ломтик",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Авокадо",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Яйцо",
+          "qty": "1 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Помидор",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Огурец",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        }
+      ],
+      "steps": [
+        "Разомни авокадо, выложи на тост.",
+        "Добавь отварное яйцо и нарезанные овощи."
+      ]
+    },
+    "ab5": {
+      "name": "Сырники с ягодами и семенами",
+      "emoji": "🥞",
+      "time": "20 мин",
+      "audience": "adults",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Творог",
+          "qty": "200 г",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Яйцо",
+          "qty": "1 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Цельнозерновая мука",
+          "qty": "40 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Ягоды",
+          "qty": "80 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Семена льна",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Смешай творог, яйцо, муку и семена.",
+        "Обжарь сырники.",
+        "Подавай с ягодами."
+      ]
+    },
+    "ab6": {
+      "name": "Гречка с яйцом и тушёными овощами",
+      "emoji": "🍚",
+      "time": "20 мин",
+      "audience": "adults",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Гречка",
+          "qty": "60 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Яйцо",
+          "qty": "1 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари гречку.",
+        "Потуши кабачок с морковью на масле.",
+        "Подавай с отварным яйцом."
+      ]
+    },
+    "ab7": {
+      "name": "Творожная запеканка с ягодами",
+      "emoji": "🍮",
+      "time": "40 мин",
+      "audience": "adults",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Творог",
+          "qty": "200 г",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Овсяные хлопья",
+          "qty": "40 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Яйцо",
+          "qty": "1 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Ягоды",
+          "qty": "80 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Тыквенные семечки",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Смешай творог, хлопья и яйцо.",
+        "Запекай при 180 °C 30 минут.",
+        "Подавай с ягодами и семечками."
+      ]
+    },
+    "ab8": {
+      "name": "Скрэмбл с киноа и зеленью",
+      "emoji": "🍳",
+      "time": "15 мин",
+      "audience": "adults",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Яйца",
+          "qty": "2 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Киноа",
+          "qty": "50 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Шпинат",
+          "qty": "40 г",
+          "group": "Зелень и специи"
+        },
+        {
+          "name": "Помидор",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Авокадо",
+          "qty": "¼ шт",
+          "group": "Овощи и фрукты"
+        }
+      ],
+      "steps": [
+        "Отвари киноа.",
+        "Приготовь скрэмбл из яиц со шпинатом и помидором.",
+        "Добавь киноа и ломтики авокадо."
+      ]
+    },
+    "al1": {
+      "name": "Гречка с индейкой и овощами",
+      "emoji": "🍗",
+      "time": "35 мин",
+      "audience": "adults",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Гречка",
+          "qty": "100 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Филе индейки",
+          "qty": "150 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Брокколи",
+          "qty": "150 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари гречку.",
+        "Обжарь индейку с морковью.",
+        "Добавь брокколи, потоми 5 минут."
+      ]
+    },
+    "al2": {
+      "name": "Курица с киноа и салатом",
+      "emoji": "🥗",
+      "time": "25 мин",
+      "audience": "adults",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Куриная грудка",
+          "qty": "150 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Киноа",
+          "qty": "80 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Микс салата",
+          "qty": "100 г",
+          "group": "Зелень и специи"
+        },
+        {
+          "name": "Огурец",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари киноа.",
+        "Обжарь грудку, нарежь.",
+        "Смешай с салатом и огурцом, заправь маслом."
+      ]
+    },
+    "al3": {
+      "name": "Чечевичный суп с овощами",
+      "emoji": "🍲",
+      "time": "30 мин",
+      "audience": "adults",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Красная чечевица",
+          "qty": "120 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Лук",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Шпинат",
+          "qty": "50 г",
+          "group": "Зелень и специи"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Обжарь лук и морковь на масле.",
+        "Добавь чечевицу и воду, вари 20 минут.",
+        "В конце добавь шпинат."
+      ]
+    },
+    "al4": {
+      "name": "Боул с нутом, киноа и овощами",
+      "emoji": "🥙",
+      "time": "25 мин",
+      "audience": "adults",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Нут",
+          "qty": "100 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Киноа",
+          "qty": "60 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Авокадо",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Микс салата",
+          "qty": "80 г",
+          "group": "Зелень и специи"
+        }
+      ],
+      "steps": [
+        "Отвари киноа.",
+        "Выложи киноа, нут, морковь и салат.",
+        "Добавь авокадо, заправь по вкусу."
+      ]
+    },
+    "al5": {
+      "name": "Рис с курицей и овощами",
+      "emoji": "🍛",
+      "time": "30 мин",
+      "audience": "adults",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Бурый рис",
+          "qty": "80 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Куриная грудка",
+          "qty": "150 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Болгарский перец",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари бурый рис.",
+        "Обжарь курицу с овощами на масле.",
+        "Смешай."
+      ]
+    },
+    "al6": {
+      "name": "Куриный суп с овощами и гречкой",
+      "emoji": "🍜",
+      "time": "35 мин",
+      "audience": "adults",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Куриная грудка",
+          "qty": "150 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Гречка",
+          "qty": "40 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Лук",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Свари бульон с курицей.",
+        "Добавь гречку, морковь и лук.",
+        "Вари до готовности, добавь масло."
+      ]
+    },
+    "al7": {
+      "name": "Салат с тунцом, фасолью и овощами",
+      "emoji": "🐟",
+      "time": "15 мин",
+      "audience": "adults",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Тунец консервированный",
+          "qty": "120 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Фасоль",
+          "qty": "80 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Микс салата",
+          "qty": "100 г",
+          "group": "Зелень и специи"
+        },
+        {
+          "name": "Помидор",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Смешай салат, тунец, фасоль и помидор.",
+        "Заправь маслом."
+      ]
+    },
+    "al8": {
+      "name": "Индейка с булгуром и овощами гриль",
+      "emoji": "🦃",
+      "time": "30 мин",
+      "audience": "adults",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Филе индейки",
+          "qty": "150 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Булгур",
+          "qty": "80 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Баклажан",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари булгур.",
+        "Обжарь индейку.",
+        "Запеки овощи на гриле с маслом, подавай вместе."
+      ]
+    },
+    "ad1": {
+      "name": "Треска на пару с овощами и киноа",
+      "emoji": "🐟",
+      "time": "25 мин",
+      "audience": "adults",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Филе трески",
+          "qty": "200 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Киноа",
+          "qty": "60 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Брокколи",
+          "qty": "150 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари киноа.",
+        "Готовь треску на пару 12–15 минут с брокколи.",
+        "Заправь маслом."
+      ]
+    },
+    "ad2": {
+      "name": "Говядина с овощами и бурым рисом",
+      "emoji": "🥩",
+      "time": "40 мин",
+      "audience": "adults",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Говядина",
+          "qty": "180 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Бурый рис",
+          "qty": "60 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Болгарский перец",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари рис.",
+        "Обжарь говядину.",
+        "Добавь овощи, туши 20 минут."
+      ]
+    },
+    "ad3": {
+      "name": "Лосось с овощами и чечевицей",
+      "emoji": "🍥",
+      "time": "30 мин",
+      "audience": "adults",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Лосось",
+          "qty": "180 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Чечевица",
+          "qty": "60 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Спаржа",
+          "qty": "150 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Помидоры",
+          "qty": "2 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари чечевицу.",
+        "Запеки лосось со спаржей 18 минут.",
+        "Подавай с помидорами и маслом."
+      ]
+    },
+    "ad4": {
+      "name": "Курица с гречкой и тушёными овощами",
+      "emoji": "🍗",
+      "time": "30 мин",
+      "audience": "adults",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Куриная грудка",
+          "qty": "180 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Гречка",
+          "qty": "60 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари гречку.",
+        "Обжарь курицу.",
+        "Потуши овощи, подавай вместе."
+      ]
+    },
+    "ad5": {
+      "name": "Индейка с киноа и зелёными овощами",
+      "emoji": "🦃",
+      "time": "30 мин",
+      "audience": "adults",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Филе индейки",
+          "qty": "180 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Киноа",
+          "qty": "60 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Брокколи",
+          "qty": "150 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Шпинат",
+          "qty": "50 г",
+          "group": "Зелень и специи"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари киноа.",
+        "Обжарь индейку.",
+        "Добавь брокколи и шпинат, потоми 5 минут."
+      ]
+    },
+    "ad6": {
+      "name": "Тушёная фасоль с овощами и зеленью",
+      "emoji": "🫘",
+      "time": "30 мин",
+      "audience": "adults",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Фасоль",
+          "qty": "150 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Помидоры",
+          "qty": "2 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Лук",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Обжарь лук и морковь.",
+        "Добавь фасоль и помидоры, туши 20 минут.",
+        "Посыпь зеленью."
+      ]
+    },
+    "ad7": {
+      "name": "Треска с печёными овощами и картофелем",
+      "emoji": "🐠",
+      "time": "35 мин",
+      "audience": "adults",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Филе трески",
+          "qty": "200 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Картофель",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Помидоры",
+          "qty": "2 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Нарежь овощи и картофель.",
+        "Выложи с треской, сбрызни маслом.",
+        "Запекай при 200 °C 25 минут."
+      ]
+    },
+    "ad8": {
+      "name": "Овощное рагу с нутом и киноа",
+      "emoji": "🍆",
+      "time": "35 мин",
+      "audience": "adults",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Нут",
+          "qty": "100 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Киноа",
+          "qty": "50 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Баклажан",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ст.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари киноа.",
+        "Потуши кабачок и баклажан.",
+        "Добавь нут и киноа, прогрей."
+      ]
+    },
+    "kb1": {
+      "name": "Каша с бананом и творогом",
+      "emoji": "🍌",
+      "time": "15 мин",
+      "audience": "kids",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Овсяные хлопья",
+          "qty": "40 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Молоко",
+          "qty": "150 мл",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Банан",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Творог",
+          "qty": "60 г",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Грецкие орехи",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Свари кашу на молоке.",
+        "Добавь банан, творог и молотые орехи."
+      ]
+    },
+    "kb2": {
+      "name": "Сырники с ягодами",
+      "emoji": "🥞",
+      "time": "20 мин",
+      "audience": "kids",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Творог",
+          "qty": "150 г",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Яйцо",
+          "qty": "1 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Цельнозерновая мука",
+          "qty": "30 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Ягоды",
+          "qty": "60 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Сливочное масло",
+          "qty": "1 ч.л.",
+          "group": "Молочное и яйца"
+        }
+      ],
+      "steps": [
+        "Смешай творог, яйцо и муку.",
+        "Обжарь сырники на масле.",
+        "Подавай с ягодами."
+      ]
+    },
+    "kb3": {
+      "name": "Омлет с овощами и тостом",
+      "emoji": "🍳",
+      "time": "10 мин",
+      "audience": "kids",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Яйца",
+          "qty": "2 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Помидор",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "50 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Цельнозерновой хлеб",
+          "qty": "1 ломтик",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Сливочное масло",
+          "qty": "1 ч.л.",
+          "group": "Молочное и яйца"
+        }
+      ],
+      "steps": [
+        "Взбей яйца, готовь с овощами под крышкой.",
+        "Подавай с тостом."
+      ]
+    },
+    "kb4": {
+      "name": "Рисовая каша с яблоком",
+      "emoji": "🍚",
+      "time": "25 мин",
+      "audience": "kids",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Рис",
+          "qty": "50 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Молоко",
+          "qty": "200 мл",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Яблоко",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Творог",
+          "qty": "50 г",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Семена льна",
+          "qty": "½ ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Свари рис на молоке.",
+        "Добавь тёртое яблоко, творог и семена."
+      ]
+    },
+    "kb5": {
+      "name": "Творожок с фруктами и овсянкой",
+      "emoji": "🍶",
+      "time": "5 мин",
+      "audience": "kids",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Творог",
+          "qty": "120 г",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Банан",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Яблоко",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Овсяные хлопья",
+          "qty": "20 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Грецкие орехи",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Разомни творог.",
+        "Добавь фрукты, хлопья и молотые орехи."
+      ]
+    },
+    "kb6": {
+      "name": "Оладьи из овсянки с ягодами",
+      "emoji": "🧇",
+      "time": "20 мин",
+      "audience": "kids",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Овсяная мука",
+          "qty": "60 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Яйцо",
+          "qty": "1 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Кефир",
+          "qty": "100 мл",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Ягоды",
+          "qty": "60 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Сливочное масло",
+          "qty": "1 ч.л.",
+          "group": "Молочное и яйца"
+        }
+      ],
+      "steps": [
+        "Смешай тесто.",
+        "Обжарь оладьи.",
+        "Подавай с ягодами."
+      ]
+    },
+    "kb7": {
+      "name": "Гречневая каша с яйцом и овощами",
+      "emoji": "🍚",
+      "time": "20 мин",
+      "audience": "kids",
+      "meal": "Завтрак",
+      "ingredients": [
+        {
+          "name": "Гречка",
+          "qty": "50 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Яйцо",
+          "qty": "1 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Морковь",
+          "qty": "50 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Молоко",
+          "qty": "50 мл",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Сливочное масло",
+          "qty": "1 ч.л.",
+          "group": "Молочное и яйца"
+        }
+      ],
+      "steps": [
+        "Отвари гречку.",
+        "Добавь припущенную морковь и отварное яйцо.",
+        "Заправь маслом."
+      ]
+    },
+    "kl1": {
+      "name": "Суп-пюре из тыквы с курицей",
+      "emoji": "🎃",
+      "time": "25 мин",
+      "audience": "kids",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Тыква",
+          "qty": "150 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Картофель",
+          "qty": "50 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Куриная грудка",
+          "qty": "80 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Цельнозерновой хлеб",
+          "qty": "1 ломтик",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари тыкву, картофель и курицу.",
+        "Пробей блендером, добавь масло.",
+        "Подавай с гренкой."
+      ]
+    },
+    "kl2": {
+      "name": "Овощной суп с курицей и гречкой",
+      "emoji": "🥕",
+      "time": "30 мин",
+      "audience": "kids",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Куриная грудка",
+          "qty": "80 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Картофель",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Гречка",
+          "qty": "30 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Свари бульон с курицей.",
+        "Добавь овощи и гречку.",
+        "Заправь маслом."
+      ]
+    },
+    "kl3": {
+      "name": "Паста с курицей и овощами",
+      "emoji": "🧀",
+      "time": "20 мин",
+      "audience": "kids",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Цельнозерновая паста",
+          "qty": "70 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Куриная грудка",
+          "qty": "80 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Сыр",
+          "qty": "20 г",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари пасту.",
+        "Обжарь курицу с овощами на масле.",
+        "Смешай, посыпь сыром."
+      ]
+    },
+    "kl4": {
+      "name": "Куриные тефтели с гречкой и овощами",
+      "emoji": "🍢",
+      "time": "30 мин",
+      "audience": "kids",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Куриный фарш",
+          "qty": "120 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Гречка",
+          "qty": "50 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "½ шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Сформируй тефтели, потуши 20 минут.",
+        "Отвари гречку.",
+        "Подавай с припущенными овощами."
+      ]
+    },
+    "kl5": {
+      "name": "Пюре с рыбной котлетой и овощами",
+      "emoji": "🥔",
+      "time": "30 мин",
+      "audience": "kids",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Картофель",
+          "qty": "120 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Молоко",
+          "qty": "50 мл",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Филе трески",
+          "qty": "100 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Морковь",
+          "qty": "50 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Сливочное масло",
+          "qty": "1 ч.л.",
+          "group": "Молочное и яйца"
+        }
+      ],
+      "steps": [
+        "Свари и разомни картофель с молоком и маслом.",
+        "Запеки рыбную котлету.",
+        "Подавай с припущенной морковью."
+      ]
+    },
+    "kl6": {
+      "name": "Рис с индейкой и овощами",
+      "emoji": "🍚",
+      "time": "30 мин",
+      "audience": "kids",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Рис",
+          "qty": "60 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Филе индейки",
+          "qty": "100 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Брокколи",
+          "qty": "80 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари рис.",
+        "Потуши индейку с овощами.",
+        "Смешай, заправь маслом."
+      ]
+    },
+    "kl7": {
+      "name": "Овощной суп с фрикадельками",
+      "emoji": "🍲",
+      "time": "30 мин",
+      "audience": "kids",
+      "meal": "Обед",
+      "ingredients": [
+        {
+          "name": "Куриный фарш",
+          "qty": "100 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Картофель",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Цельнозерновая вермишель",
+          "qty": "30 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Свари бульон, добавь фрикадельки.",
+        "Добавь картофель, морковь и вермишель.",
+        "Заправь маслом."
+      ]
+    },
+    "kd1": {
+      "name": "Куриные тефтели с овощами и рисом",
+      "emoji": "🍢",
+      "time": "30 мин",
+      "audience": "kids",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Куриный фарш",
+          "qty": "120 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Рис",
+          "qty": "40 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Сформируй тефтели с рисом.",
+        "Потуши с овощами 20 минут.",
+        "Заправь маслом."
+      ]
+    },
+    "kd2": {
+      "name": "Рыбные котлетки с овощным пюре",
+      "emoji": "🐠",
+      "time": "30 мин",
+      "audience": "kids",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Филе трески",
+          "qty": "120 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Картофель",
+          "qty": "80 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "50 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Цветная капуста",
+          "qty": "80 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Приготовь рыбные котлетки.",
+        "Отвари и разомни овощи в пюре.",
+        "Заправь маслом."
+      ]
+    },
+    "kd3": {
+      "name": "Индейка с овощами и картофелем",
+      "emoji": "🦃",
+      "time": "30 мин",
+      "audience": "kids",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Филе индейки",
+          "qty": "120 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Картофель",
+          "qty": "100 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Обжарь индейку.",
+        "Добавь картофель и овощи, туши 20 минут.",
+        "Заправь маслом."
+      ]
+    },
+    "kd4": {
+      "name": "Творожная запеканка с тыквой",
+      "emoji": "🍮",
+      "time": "40 мин",
+      "audience": "kids",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Творог",
+          "qty": "200 г",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Яйцо",
+          "qty": "1 шт",
+          "group": "Молочное и яйца"
+        },
+        {
+          "name": "Тыква",
+          "qty": "80 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Овсяные хлопья",
+          "qty": "30 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Сливочное масло",
+          "qty": "1 ч.л.",
+          "group": "Молочное и яйца"
+        }
+      ],
+      "steps": [
+        "Смешай творог, яйцо, тыкву и хлопья.",
+        "Запекай при 180 °C 30 минут."
+      ]
+    },
+    "kd5": {
+      "name": "Тушёная курица с овощами и гречкой",
+      "emoji": "🥕",
+      "time": "30 мин",
+      "audience": "kids",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Куриная грудка",
+          "qty": "120 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Гречка",
+          "qty": "40 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Брокколи",
+          "qty": "80 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари гречку.",
+        "Потуши курицу с овощами.",
+        "Смешай, заправь маслом."
+      ]
+    },
+    "kd6": {
+      "name": "Паста с индейкой и овощами",
+      "emoji": "🍝",
+      "time": "30 мин",
+      "audience": "kids",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Цельнозерновая паста",
+          "qty": "70 г",
+          "group": "Бакалея"
+        },
+        {
+          "name": "Фарш из индейки",
+          "qty": "100 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Помидоры",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Морковь",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Отвари пасту.",
+        "Потуши фарш с овощами.",
+        "Смешай."
+      ]
+    },
+    "kd7": {
+      "name": "Запечённая рыба с овощами и картофелем",
+      "emoji": "🐟",
+      "time": "35 мин",
+      "audience": "kids",
+      "meal": "Ужин",
+      "ingredients": [
+        {
+          "name": "Филе трески",
+          "qty": "120 г",
+          "group": "Мясо и рыба"
+        },
+        {
+          "name": "Картофель",
+          "qty": "100 г",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Кабачок",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Помидоры",
+          "qty": "1 шт",
+          "group": "Овощи и фрукты"
+        },
+        {
+          "name": "Оливковое масло",
+          "qty": "1 ч.л.",
+          "group": "Бакалея"
+        }
+      ],
+      "steps": [
+        "Нарежь картофель и овощи.",
+        "Выложи с рыбой, сбрызни маслом.",
+        "Запекай 25 минут."
+      ]
+    }
+  },
+  "favorites": [
+    "ab1",
+    "ad3",
+    "kb2",
+    "al2",
+    "kd5"
+  ]
+};
+var DATA=null, usedFallback=false, BUCKETS=null;
+var state={ tab:'home', week:0, day:0, recipe:null, checked:{} };
+
+try{ if(window.Telegram && Telegram.WebApp){ Telegram.WebApp.ready(); Telegram.WebApp.expand(); } }catch(e){}
+
+function loadData(){
+  fetch('data.json?v='+Date.now())
+    .then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.json(); })
+    .then(function(j){ DATA=j; start(); })
+    .catch(function(){ if(FALLBACK){ DATA=FALLBACK; usedFallback=true; start(); }
+      else document.getElementById('app').innerHTML='<div class="banner">Не удалось загрузить data.json. Проверь, что файл лежит рядом с index.html.</div>'; });
+}
+function start(){ buildBuckets(); document.getElementById('nav').style.display='flex'; render(); }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function dish(id){ return DATA.dishes[id]; }
+
+/* --- Движок ротации: корзины (аудитория × приём пищи), без повторов --- */
+function buildBuckets(){
+  BUCKETS={};
+  DATA.meals.forEach(function(m){ ['adults','kids'].forEach(function(a){ BUCKETS[a+'|'+m]=[]; }); });
+  Object.keys(DATA.dishes).sort().forEach(function(id){ var d=dish(id); var k=d.audience+'|'+d.meal; if(BUCKETS[k]) BUCKETS[k].push(id); });
+}
+function genMeals(aud, W, d){ var meals={}, used={}; DATA.meals.forEach(function(m){ var b=BUCKETS[aud+'|'+m]||[]; if(!b.length) return; var i=(W+d)%b.length, t=0; while(t<b.length && used[DATA.dishes[b[i]].name]){ i=(i+1)%b.length; t++; } meals[m]=b[i]; used[DATA.dishes[b[i]].name]=true; }); return meals; }
+function generateWeek(W){ var out=[]; for(var d=0;d<7;d++){ out.push({ short:DATA.daysShort[d], day:DATA.days[d], adults:genMeals('adults',W,d), kids:genMeals('kids',W,d) }); } return out; }
+
+function go(tab){ state.tab=tab; state.recipe=null; render(); window.scrollTo(0,0); }
+function pickDay(i){ state.day=i; render(); }
+function prevWeek(){ if(state.week>0){ state.week--; render(); } }
+function nextWeek(){ state.week++; render(); }
+function openRecipe(id){ state.recipe=id; render(); }
+function closeRecipe(){ state.recipe=null; render(); }
+function toggle(key){ state.checked[key]=!state.checked[key]; render(); }
+
+function weekSwitch(){
+  var W=state.week;
+  return '<div class="wksw">'+
+    '<button onclick="prevWeek()" '+(W===0?'disabled':'')+'>‹</button>'+
+    '<div class="wk">Неделя '+(W+1)+(W===0?' <small>· текущая</small>':'')+'</div>'+
+    '<button onclick="nextWeek()">›</button></div>';
+}
+function menuBlock(cls,label,icon,meals){
+  var rows=Object.keys(meals).map(function(mt){ var d=dish(meals[mt]); if(!d) return '';
+    return '<div class="row" onclick="openRecipe(\''+meals[mt]+'\')"><span>'+mt+'</span><span class="val">'+esc(d.name)+' '+d.emoji+'</span></div>'; }).join('');
+  return '<div class="menu '+cls+'"><div class="lbl">'+icon+' '+label+'</div>'+rows+'</div>';
+}
+
+function viewHome(){
+  var wk=generateWeek(state.week); var w=wk[state.day];
+  var pal=['#ED93B1','#FAC775','#97C459','#85B7EB','#AFA9EC','#F0A6C0','#7FCBA6'];
+  var ink=['#4B1528','#633806','#173404','#042C53','#26215C','#5A1230','#0F5138'];
+  var days=wk.map(function(d,i){ var on=i===state.day;
+    return '<button class="day'+(on?' on':'')+'" style="'+(on?('background:'+pal[i]+';color:'+ink[i]):'')+'" onclick="pickDay('+i+')">'+d.short+'</button>'; }).join('');
+  var count=Object.keys(w.adults).length+Object.keys(w.kids).length;
+  return '<div class="topbar"><div class="hello">Привет, <b>'+esc(DATA.user.name)+'</b></div>'+
+      '<div class="avatar">'+esc((DATA.user.name||'?').charAt(0))+'</div></div>'+
+    weekSwitch()+
+    '<div class="hero"><div class="hero-figure"></div><h1>Меню</h1><div class="h2 serif">на неделю</div>'+
+      '<p>Спланируй, посмотри рецепты, собери покупки</p>'+
+      '<div class="sticker1"><b>'+count+'</b><span>блюд</span></div>'+
+      '<div class="sticker2">сегодня '+esc(w.short)+'</div></div>'+
+    '<div class="days">'+days+'</div>'+
+    '<div class="sec-title">Меню · '+esc(w.day.toLowerCase())+'</div>'+
+    menuBlock('adult','ВЗРОСЛЫЕ','👨‍👩',w.adults)+
+    menuBlock('kid','ДЕТИ','🧒',w.kids)+
+    '<div class="tiles">'+
+      '<div class="tile rec" onclick="go(\'rec\')"><div class="ic">📖</div><div class="tt">Рецепты</div></div>'+
+      '<div class="tile fav" onclick="go(\'fav\')"><div class="ic">❤️</div><div class="tt">Избранное</div></div></div>'+
+    '<button class="cta" onclick="go(\'cart\')">🛒 Собрать список покупок</button>';
+}
+
+function viewWeek(){
+  var wk=generateWeek(state.week);
+  var out='<div class="page-h">Неделя <span class="serif">целиком</span></div>'+weekSwitch();
+  wk.forEach(function(w){
+    function line(meals){ return Object.keys(meals).map(function(mt){ var d=dish(meals[mt]);
+      return '<div class="row" onclick="openRecipe(\''+meals[mt]+'\')"><span>'+mt+'</span><span class="val">'+esc(d.name)+' '+d.emoji+'</span></div>'; }).join(''); }
+    out+='<div class="weekday"><h3>'+esc(w.day)+'</h3>'+
+      '<div class="menu adult" style="margin-bottom:8px"><div class="lbl">👨‍👩 ВЗРОСЛЫЕ</div>'+line(w.adults)+'</div>'+
+      '<div class="menu kid"><div class="lbl">🧒 ДЕТИ</div>'+line(w.kids)+'</div></div>';
+  });
+  return out;
+}
+
+function dishCard(id){ var d=dish(id); if(!d) return '';
+  return '<div class="listcard"><div class="dish" onclick="openRecipe(\''+id+'\')"><div class="em">'+d.emoji+'</div>'+
+    '<div><div class="nm">'+esc(d.name)+'</div><div class="tm">⏱ '+esc(d.time)+'</div></div></div></div>'; }
+function viewRecipes(){ var out='<div class="page-h">Все <span class="serif">рецепты</span></div>';
+  Object.keys(DATA.dishes).sort().forEach(function(id){ out+=dishCard(id); }); return out; }
+function viewFav(){ var out='<div class="page-h">Избранные <span class="serif">блюда</span></div>';
+  if(!DATA.favorites||!DATA.favorites.length) return out+'<div class="empty">Пока пусто.</div>';
+  DATA.favorites.forEach(function(id){ out+=dishCard(id); }); return out; }
+
+function buildShopping(){
+  var wk=generateWeek(state.week), acc={};
+  wk.forEach(function(w){ [w.adults,w.kids].forEach(function(meals){ Object.keys(meals).forEach(function(mt){
+    var d=dish(meals[mt]); if(!d) return; d.ingredients.forEach(function(ing){
+      acc[ing.group]=acc[ing.group]||{}; acc[ing.group][ing.name]=(acc[ing.group][ing.name]||0)+1; }); }); }); });
+  return acc;
+}
+function viewCart(){
+  var acc=buildShopping(); var order=DATA.groups||Object.keys(acc);
+  var out='<div class="page-h">Список <span class="serif">покупок</span></div>'+weekSwitch()+
+    '<div style="font-size:12px;color:var(--mut);margin:0 2px 14px">Собрано из меню на неделю '+(state.week+1)+'. Нажми, чтобы отметить купленное.</div>';
+  order.forEach(function(g){ if(!acc[g]) return;
+    var items=Object.keys(acc[g]).sort().map(function(nm){ var n=acc[g][nm]; var key=state.week+'|'+g+'|'+nm; var done=state.checked[key];
+      return '<div class="cart-item'+(done?' done':'')+'" onclick="toggle(\''+key.replace(/'/g,'')+'\')">'+
+        '<div class="box">'+(done?'✓':'')+'</div><div class="nm">'+esc(nm)+'</div><div class="qty">'+(n>1?('× '+n):'')+'</div></div>'; }).join('');
+    out+='<div class="cart-group"><h4>'+esc(g)+'</h4>'+items+'</div>'; });
+  return out;
+}
+
+function recipeSheet(){
+  if(!state.recipe) return ''; var d=dish(state.recipe); if(!d) return '';
+  var ings=d.ingredients.map(function(i){ return '<div class="ing"><span>'+esc(i.name)+'</span><span class="q">'+esc(i.qty)+'</span></div>'; }).join('');
+  var steps=d.steps.map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('');
+  return '<div class="modal" onclick="if(event.target===this)closeRecipe()"><div class="sheet">'+
+    '<button class="close" onclick="closeRecipe()">✕</button><div class="em">'+d.emoji+'</div><h2>'+esc(d.name)+'</h2>'+
+    '<div class="tm">⏱ '+esc(d.time)+'</div><h5>Ингредиенты</h5>'+ings+'<h5>Приготовление</h5><ol>'+steps+'</ol></div></div>';
+}
+
+function render(){
+  var v='';
+  if(state.tab==='home') v=viewHome();
+  else if(state.tab==='week') v=viewWeek();
+  else if(state.tab==='rec') v=viewRecipes();
+  else if(state.tab==='fav') v=viewFav();
+  else if(state.tab==='cart') v=viewCart();
+  if(usedFallback) v='<div class="banner">⚠ data.json не загрузился — показан встроенный пример (для теста в браузере это норма).</div>'+v;
+  document.getElementById('app').innerHTML=v+recipeSheet();
+  var navTab=(state.tab==='rec')?'home':state.tab;
+  document.querySelectorAll('.nav button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-tab')===navTab); });
+}
+loadData();
+</script>
+</body>
+</html>
